@@ -1,0 +1,65 @@
+function createProject() {
+  const name = document.getElementById("projectName").value.trim();
+  const error = document.getElementById("projectError");
+
+  if (!name) {
+    error.textContent = "Project name required";
+    return;
+  }
+
+  fetch("api/project/create.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        error.textContent = data.error;
+      } else {
+        error.textContent = "";
+        document.getElementById("projectName").value = "";
+        loadProjects();
+      }
+    });
+}
+
+function loadProjects() {
+  fetch("api/project/list.php")
+    .then(res => res.json())
+    .then(projects => {
+      let html = "";
+
+      if (!projects || projects.length === 0) {
+        html = "<p>No projects yet</p>";
+      }
+
+      projects.forEach(p => {
+        html += `
+          <div style="border:1px solid #ccc;padding:10px;margin-bottom:10px;">
+            <strong>${p.name}</strong>
+            <span style="float:right">
+              ${formatTime(p.total_seconds)}
+            </span>
+            <br><br>
+            <button onclick="startTimer(${p.id})">Start</button>
+            <button onclick="stopTimer()">Stop</button>
+          </div>
+        `;
+      });
+
+      document.getElementById("projectList").innerHTML = html;
+    })
+    .catch(err => console.error(err));
+}
+
+function formatTime(seconds) {
+  seconds = parseInt(seconds || 0);
+  let h = Math.floor(seconds / 3600);
+  let m = Math.floor((seconds % 3600) / 60);
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadProjects();
+});

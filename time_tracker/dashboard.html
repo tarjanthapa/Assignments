@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+  <h2>Welcome, <span id="user"></span></h2>
+</header>
+
+<section>
+  <h3>Create Project</h3>
+  <input id="projectName" placeholder="Project name">
+  <button onclick="createProject()">Add</button>
+  <p id="projectError"></p>
+</section>
+
+<section>
+  <h3>Projects</h3>
+  <div id="projectList"></div>
+</section>
+
+<section>
+  <h3>Time Entries</h3>
+  <div id="entries"></div>
+</section>
+
+<script src="assets/js/projects.js"></script>
+<script src="assets/js/timer.js"></script>
+<script src="assets/js/entries.js"></script>
+<script>
+  const username = localStorage.getItem("username");
+  if (!username) {
+    window.location.href = "index.html";
+  }
+  document.getElementById("user").innerText = username;
+</script>
+
+
+</body>
+</html>
